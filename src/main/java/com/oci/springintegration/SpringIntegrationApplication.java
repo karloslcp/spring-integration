@@ -11,6 +11,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ImportResource;
 import org.springframework.integration.channel.DirectChannel;
+import org.springframework.integration.core.MessagingTemplate;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageHandler;
 import org.springframework.messaging.MessageHeaders;
@@ -26,9 +27,9 @@ public class SpringIntegrationApplication implements ApplicationRunner
     @Qualifier("inputChannel")
     private DirectChannel inputChannel;
 
-    @Autowired
-    @Qualifier("outputChannel")
-    private DirectChannel outputChannel;
+//    @Autowired
+//    @Qualifier("outputChannel")
+//    private DirectChannel outputChannel;
 
     public static void main(String[] args)
     {
@@ -75,14 +76,25 @@ public class SpringIntegrationApplication implements ApplicationRunner
 //        channel.send(message3);
 
         // Creating a message - version 4
-        outputChannel.subscribe((message -> System.out.println(message)));
+//        outputChannel.subscribe((message -> System.out.println(message)));
+//
+//        Message<String> message4 = MessageBuilder
+//            .withPayload("Ola k ase?")
+//            .setHeader("english", "hello, what are you doing?")
+//            .setHeader("spanish", "Hola, que haces?")
+//            .build();
+//
+//        inputChannel.send(message4);
 
-        Message<String> message4 = MessageBuilder
+        // Creating a message - version 4
+        Message<String> message5 = MessageBuilder
             .withPayload("Ola k ase?")
             .setHeader("english", "hello, what are you doing?")
             .setHeader("spanish", "Hola, que haces?")
             .build();
 
-        inputChannel.send(message4);
+        MessagingTemplate template = new MessagingTemplate();
+        Message<?> returnedMessage = template.sendAndReceive(inputChannel, message5);
+        System.out.println(returnedMessage);
     }
 }
