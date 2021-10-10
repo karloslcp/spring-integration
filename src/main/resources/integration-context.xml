@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+    xmlns="http://www.springframework.org/schema/beans"
+    xmlns:int="http://www.springframework.org/schema/integration"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/integration
+        http://www.springframework.org/schema/integration/spring-integration.xsd">
+
+    <int:gateway id="printerGateway" service-interface="com.oci.springintegration.PrinterGateway" default-request-channel="inputChannel"/>
+    <int:channel id="inputChannel">
+        <int:queue capacity="10"/>
+    </int:channel>
+
+    <int:service-activator ref="printService" input-channel="inputChannel">
+        <int:poller fixed-rate="5" time-unit="SECONDS" max-messages-per-poll="2"/>
+    </int:service-activator>
+    <bean id="printService" class="com.oci.springintegration.PrinterService" />
+
+</beans>
