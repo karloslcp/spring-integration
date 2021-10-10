@@ -17,9 +17,11 @@
     <int:channel id="inputChannel"/>
 
     <!-- Services -->
-    <int:service-activator input-channel="inputChannel" ref="printService"/>
+    <int:service-activator input-channel="inputChannel" ref="printService" id="printActivator"/>
+    <int:service-activator input-channel="inputChannel" ref="reverseService" id="reverseActivator"/>
 
     <!-- Spring Beans -->
     <bean id="printService" class="com.oci.springintegration.PrintService"/>
+    <bean id="reverseService" class="com.oci.springintegration.ReverseService"/>
 
 </beans>

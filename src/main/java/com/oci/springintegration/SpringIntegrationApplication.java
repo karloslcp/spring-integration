@@ -23,5 +23,8 @@ public class SpringIntegrationApplication implements ApplicationRunner
     public void run(final ApplicationArguments args) throws Exception
     {
         gateway.print("Hello, World!");
+        gateway.print("Ola k ase?");
+        gateway.print("Ola k ase?");
+        gateway.print("Hello, World!");
     }
 }
