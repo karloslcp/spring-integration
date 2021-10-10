@@ -9,6 +9,13 @@
         http://www.springframework.org/schema/integration
         http://www.springframework.org/schema/integration/spring-integration.xsd">
 
-    <int:channel id="olaKChannel"/>
+    <int:channel id="inputChannel"/>
+    <int:channel id="outputChannel"/>
+
+    <int:service-activator
+            ref="printService"
+            input-channel="inputChannel"
+            output-channel="outputChannel"/>
+    <bean id="printService" class="com.oci.springintegration.PrintService"/>
 
 </beans>

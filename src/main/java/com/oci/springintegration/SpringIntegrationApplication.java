@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
@@ -22,7 +23,12 @@ import org.springframework.messaging.support.MessageBuilder;
 public class SpringIntegrationApplication implements ApplicationRunner
 {
     @Autowired
-    private DirectChannel channel;
+    @Qualifier("inputChannel")
+    private DirectChannel inputChannel;
+
+    @Autowired
+    @Qualifier("outputChannel")
+    private DirectChannel outputChannel;
 
     public static void main(String[] args)
     {
@@ -32,40 +38,51 @@ public class SpringIntegrationApplication implements ApplicationRunner
     @Override
     public void run(final ApplicationArguments args) throws Exception
     {
-        PrintService printService = new PrintService();
+//        PrintService printService = new PrintService();
+//
+//        // Creating a message - version 1
+//        Map<String, Object> map = Collections.singletonMap("Ola", "k ase?");
+//        MessageHeaders headers = new MessageHeaders(map);
+//        String payload = "Hello, World!";
+//
+//        Message<String> message1 = new GenericMessage<>(payload, headers);
+//
+//        printService.print(message1);
+//
+//        // Creating a message - version 2
+//        Message<String> message2 = MessageBuilder
+//            .withPayload("Hola, Mundo!")
+//            .setHeader("Hola", "qué haces?")
+//            .build();
+//
+//        printService.print(message2);
+//
+//        // Creating a message - version 3
+//        Message<String> message3 = MessageBuilder
+//            .withPayload("Priviet, Worldu!")
+//            .setHeader("Zdravstvui", "shto ti?")
+//            .build();
+//
+////        channel.subscribe((message) -> new PrintService().print((Message<String>) message));
+//        channel.subscribe(new MessageHandler()
+//        {
+//            @Override
+//            public void handleMessage(final Message<?> message) throws MessagingException
+//            {
+//                new PrintService().print((Message<String>) message);
+//            }
+//        });
+//        channel.send(message3);
 
-        // Creating a message - version 1
-        Map<String, Object> map = Collections.singletonMap("Ola", "k ase?");
-        MessageHeaders headers = new MessageHeaders(map);
-        String payload = "Hello, World!";
+        // Creating a message - version 4
+        outputChannel.subscribe((message -> System.out.println(message)));
 
-        Message<String> message1 = new GenericMessage<>(payload, headers);
-
-        printService.print(message1);
-
-        // Creating a message - version 2
-        Message<String> message2 = MessageBuilder
-            .withPayload("Hola, Mundo!")
-            .setHeader("Hola", "qué haces?")
+        Message<String> message4 = MessageBuilder
+            .withPayload("Ola k ase?")
+            .setHeader("english", "hello, what are you doing?")
+            .setHeader("spanish", "Hola, que haces?")
             .build();
 
-        printService.print(message2);
-
-        // Creating a message - version 3
-        Message<String> message3 = MessageBuilder
-            .withPayload("Priviet, Worldu!")
-            .setHeader("Zdravstvui", "shto ti?")
-            .build();
-
-//        channel.subscribe((message) -> new PrintService().print((Message<String>) message));
-        channel.subscribe(new MessageHandler()
-        {
-            @Override
-            public void handleMessage(final Message<?> message) throws MessagingException
-            {
-                new PrintService().print((Message<String>) message);
-            }
-        });
-        channel.send(message3);
+        inputChannel.send(message4);
     }
 }
