@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<beans
+    xmlns="http://www.springframework.org/schema/beans"
+    xmlns:int="http://www.springframework.org/schema/integration"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/integration
+        http://www.springframework.org/schema/integration/spring-integration.xsd">
+
+    <int:gateway id="printerGateway" service-interface="com.oci.springintegration.PrinterGateway" default-request-channel="channelOne"/>
+
+    <int:channel id="channelOne"/>
+    <int:channel id="channelTwo"/>
+    <int:channel id="channelThree">
+        <int:interceptors>
+            <int:wire-tap channel="channelFour"/>
+        </int:interceptors>
+    </int:channel>
+    <int:channel id="channelFour"/>
+
+    <int:service-activator ref="upperService" input-channel="channelOne" output-channel="channelTwo"/>
+    <int:service-activator ref="reverseService" input-channel="channelTwo" output-channel="channelThree"/>
+    <int:service-activator ref="appendService" input-channel="channelThree"/>
+    <int:service-activator ref="interceptorService" input-channel="channelFour"/>
+
+    <bean id="upperService" class="com.oci.springintegration.UpperService"/>
+    <bean id="reverseService" class="com.oci.springintegration.ReverseService"/>
+    <bean id="appendService" class="com.oci.springintegration.AppendService"/>
+    <bean id="interceptorService" class="com.oci.springintegration.InterceptorService"/>
+
+</beans>
