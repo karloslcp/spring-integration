@@ -11,14 +11,24 @@
 
     <int:gateway id="printerGateway"
                  service-interface="com.oci.springintegration.PrinterGateway"
-                 default-request-channel="inputChannel"/>
+                 default-request-channel="inputChannel"
+                 default-reply-channel="replyChannel"/>
 
     <int:publish-subscribe-channel id="inputChannel"/>
+    <int:channel id="replyChannel">
+            <int:interceptors>
+                <int:wire-tap channel="extraWorkChannel"/>
+            </int:interceptors>
+    </int:channel>
+    <int:channel id="extraWorkChannel"/>
 
     <int:service-activator ref="printerOneService" input-channel="inputChannel"/>
-    <int:service-activator ref="printerTwoService" input-channel="inputChannel"/>
+    <int:service-activator ref="printerTwoService" input-channel="inputChannel" output-channel="replyChannel"/>
+
+    <int:service-activator ref="extraService" input-channel="extraWorkChannel"/>
 
     <bean id="printerOneService" class="com.oci.springintegration.PrinterOneService"/>
     <bean id="printerTwoService" class="com.oci.springintegration.PrinterTwoService"/>
+    <bean id="extraService" class="com.oci.springintegration.ExtraService"/>
 
 </beans>

@@ -23,7 +23,7 @@ public class SpringIntegrationApplication implements ApplicationRunner
 	{
 		for (int i = 0; i < 10; i++)
 		{
-			System.out.println(gateway.print("Ola k ase? " + i).getPayload());
+			System.out.println("En main!!! " + gateway.print("Ola k ase? " + i).getPayload());
 		}
 	}
 }
