@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+    xmlns="http://www.springframework.org/schema/beans"
+    xmlns:int="http://www.springframework.org/schema/integration"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/integration
+        http://www.springframework.org/schema/integration/spring-integration.xsd">
+
+    <int:gateway id="gateway"
+                 service-interface="com.oci.springintegration.PersonGateway"
+                 default-request-channel="inputChannel"/>
+
+    <int:channel id="inputChannel"/>
+    <int:channel id="enrichedChannel"/>
+    <int:channel id="passwordChannel"/>
+
+    <int:enricher input-channel="inputChannel" request-channel="passwordChannel" output-channel="enrichedChannel">
+        <int:property name="password" expression="payload.value"/>
+    </int:enricher>
+
+    <int:service-activator ref="passwordService" input-channel="passwordChannel"/>
+
+    <int:object-to-json-transformer input-channel="enrichedChannel"/>
+
+</beans>
